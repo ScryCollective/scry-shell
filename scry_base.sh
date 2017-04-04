@@ -335,12 +335,9 @@ required_casks=(
 required_wheels=(
   "appdirs"
   "packaging"
-  "pip"
   "pyparsing"
-  "setuptools"
   "six"
   "sqlparse"
-  "wheel"
 )
 
 bootstrap() {
