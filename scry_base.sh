@@ -332,12 +332,24 @@ required_casks=(
   "textwrangler"
 )
 
+required_wheels=(
+  "appdirs"
+  "packaging"
+  "pip"
+  "pyparsing"
+  "setuptools"
+  "six"
+  "sqlparse"
+  "wheel"
+)
+
 bootstrap() {
   if ! hash brew 2>/dev/null; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
   fi
-  brew install --quiet "${required_bottles[@]}" ;
-  brew cask install --quiet "${required_casks[@]}" ;
+  brew install "${required_bottles[@]}" ;
+  brew cask install "${required_casks[@]}" ;
+  pip install "${required_wheels[@]}" ;
 }
 
 list_installed() {
