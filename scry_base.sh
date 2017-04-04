@@ -446,15 +446,17 @@ upgrade() {
 }
 
 deepgit() {
-  currentDir=$(pwd)
   for item in *
   do
+    # only directories are examined
     if [[ -d "${item}" ]]; then
+      # if they have a .git sub directory, then they are assumed to be a git repo
       if [[ -d "${item}/.git" ]]; then
         echo "————————————————————————————————————————"
-        echo "${currentDir}/${item}"
+        echo "$(pwd)/${item}"
         git -C "${item}" "$@"
-      else
+      # otherwise recurse into the directory, unless the name begins with micro
+      elif [[ "${item:0:1}" != "µ" ]]; then
         pushd "${item}" > /dev/null
         deepgit "$@"
         popd > /dev/null
