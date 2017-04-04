@@ -299,6 +299,8 @@ httpDebug () { /usr/bin/curl "$@" -o /dev/null -w "dns: %{time_namelookup} conne
 #   ---------------------------------------
 #   10.   BOOTSTRAPPING AND UPDATING DEVELOPMENT ENVIRONMENT
 #   ---------------------------------------
+
+# command line applications
 required_bottles=(
   "awscli"
   "flow"
@@ -316,6 +318,7 @@ required_bottles=(
   "yarn"
 )
 
+# graphical applications
 required_casks=(
   "adobe-reader"
   "atom"
@@ -323,6 +326,7 @@ required_casks=(
   "firefox"
   "google-chrome"
   "google-drive"
+  "inkscape"
   "java"
   "openoffice"
   "paintbrush"
@@ -330,8 +334,10 @@ required_casks=(
   "rowanj-gitx"
   "spectacle"
   "textwrangler"
+  "xquartz"
 )
 
+# python libraries
 required_wheels=(
   "appdirs"
   "packaging"
@@ -340,6 +346,7 @@ required_wheels=(
   "sqlparse"
 )
 
+# node libraries
 required_modules=(
   "babel-eslint"
   "create-react-app"
@@ -352,6 +359,26 @@ required_modules=(
   "node-gyp"
 )
 
+# atom extensions
+required_packages=(
+  "atom-beautify"
+  "busy-signal"
+  "flow-ide"
+  "git-control"
+  "git-plus"
+  "git-time-machine"
+  "intentions"
+  "linter"
+  "linter-eslint"
+  "linter-jsonlint"
+  "linter-shellcheck"
+  "linter-stylelint"
+  "linter-ui-default"
+  "react"
+  "script"
+  "sort-lines"
+  "split-diff"
+)
 
 bootstrap() {
   if ! hash brew 2>/dev/null; then
@@ -361,6 +388,7 @@ bootstrap() {
   brew cask install "${required_casks[@]}" ;
   pip install "${required_wheels[@]}" ;
   npm install -g "${required_modules[@]}" ;
+  apm install "${required_packages[@]}" ;
 }
 
 list_installed() {
@@ -386,7 +414,7 @@ list_installed() {
 }
 
 #   upgrade: Upgrade brew itself, and all installed bottles and casks,
-#            then upgrade all python packages installed with pip, all
+#            then upgrade all python wheels installed with pip, all
 #            globally installed node modules, and finally all atom packages.
 upgrade() {
   brew update;
