@@ -340,6 +340,19 @@ required_wheels=(
   "sqlparse"
 )
 
+required_modules=(
+  "babel-eslint"
+  "create-react-app"
+  "eslint"
+  "eslint-config-react-app"
+  "eslint-plugin-flowtype"
+  "eslint-plugin-import"
+  "eslint-plugin-jsx-a11y"
+  "eslint-plugin-react"
+  "node-gyp"
+)
+
+
 bootstrap() {
   if ! hash brew 2>/dev/null; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
@@ -347,6 +360,7 @@ bootstrap() {
   brew install "${required_bottles[@]}" ;
   brew cask install "${required_casks[@]}" ;
   pip install "${required_wheels[@]}" ;
+  npm install -g "${required_modules[@]}" ;
 }
 
 list_installed() {
