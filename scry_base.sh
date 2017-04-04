@@ -107,7 +107,7 @@ alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\
 #           displays paginated result with colored search terms and two lines surrounding each hit.
 #   Example: mans mplayer codec
 mans () {
-    man $1 | grep -iC2 --color=always $2 | less
+  man $1 | grep -iC2 --color=always $2 | less
 }
 
 #   showa: to remind yourself of an alias (given some part of it)
@@ -380,6 +380,19 @@ required_packages=(
   "split-diff"
 )
 
+# google chrome extensions
+required_extensions=(
+  "lmjegmlicamnimmfhcmpkclmigmmcbeh" # Application Launcher for Drive
+  "aohghmighlieiainnegkcijnfilokake" # Google Docs
+  "ghbmnnjooekpmoecnnnilnnbdlolhkhi" # Google Docs Offline
+  "nckgahadagoaajjgafhacjanaoiihapd" # Google Hangouts
+  "felcaaldnbdncclmgdcncolpebgiejap" # Google Sheets
+  "aapocclcgogkmnckokdopfmhonfmgoek" # Google Slides
+  "hgldghadipiblonfkkicmgcbbijnpeog" # Immutable.js Object Formatter
+  "fmkadmapgofadopljbjfkapdkoienihi" # React Developer Tools
+  "lmhkpmbekcpmknklioeibfkpmmfibljd" # Redux DevTools
+)
+
 bootstrap() {
   if ! hash brew 2>/dev/null; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
@@ -389,6 +402,13 @@ bootstrap() {
   pip install "${required_wheels[@]}" ;
   npm install -g "${required_modules[@]}" ;
   apm install "${required_packages[@]}" ;
+  prefContents='{ "external_update_url": "https://clients2.google.com/service/update2/crx" }'
+  for extensionID in "${required_extensions[@]}"; do
+    prefFilePath="${HOME}/Library/Application Support/Google/Chrome/External Extensions/${extensionID}.json"
+    if ! [[ -f "${prefFilePath}" ]]; then
+      echo "${prefContents}" > "${prefFilePath}"
+    fi
+  done
 }
 
 list_installed() {
@@ -423,4 +443,22 @@ upgrade() {
   pip list --format legacy --outdated | cut -d ' ' -f1 | xargs -n1 pip install --upgrade;
   npm outdated -g | tail -n +2 | cut -d ' ' -f1 | xargs -n1 npm install -g;
   apm upgrade --no-confirm;
+}
+
+deepgit() {
+  currentDir=$(pwd)
+  for item in *
+  do
+    if [[ -d "${item}" ]]; then
+      if [[ -d "${item}/.git" ]]; then
+        echo "————————————————————————————————————————"
+        echo "${currentDir}/${item}"
+        git -C "${item}" "$@"
+      else
+        pushd "${item}" > /dev/null
+        deepgit "$@"
+        popd > /dev/null
+      fi
+    fi
+  done
 }
