@@ -316,12 +316,52 @@ required_bottles=(
   "yarn"
 )
 
+required_casks=(
+  "adobe-reader"
+  "atom"
+  "caffeine"
+  "firefox"
+  "google-chrome"
+  "google-drive"
+  "java"
+  "openoffice"
+  "paintbrush"
+  "quickbooks"
+  "rowanj-gitx"
+  "spectacle"
+  "textwrangler"
+)
+
 bootstrap() {
   if ! hash brew 2>/dev/null; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
   fi
-  brew install "${required_bottles[@]}" ;
+  brew install --quiet "${required_bottles[@]}" ;
+  brew cask install --quiet "${required_casks[@]}" ;
 }
+
+list_installed() {
+  echo "brew list -1";
+  echo "-----------";
+  brew list -1;
+  echo "";
+  echo "brew cask list -1";
+  echo "-----------------";
+  brew cask list -1;
+  echo "";
+  echo "pip list --format=legacy";
+  echo "------------------------";
+  pip list --format=legacy;
+  echo "";
+  echo "npm list -g --depth=0";
+  echo "---------------------";
+  npm list -g --depth=0;
+  echo "";
+  echo "apm list -i";
+  echo "-----------";
+  apm list -i;
+}
+
 #   upgrade: Upgrade brew itself, and all installed bottles and casks,
 #            then upgrade all python packages installed with pip, all
 #            globally installed node modules, and finally all atom packages.
