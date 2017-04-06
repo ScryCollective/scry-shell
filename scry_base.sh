@@ -397,7 +397,17 @@ required_extensions=(
   "lmhkpmbekcpmknklioeibfkpmmfibljd" # Redux DevTools
 )
 
+# from http://stackoverflow.com/questions/3685970/check-if-an-array-contains-a-value
+elementIn () {
+ local e
+ for e in "${@:2}"; do [[ "${e}" == "${1%\@*}" ]] && return 0; done
+ return 1
+}
+
 bootstrap() {
+  local extensionID
+  local installedAtomPackages
+  local requiredPackage
   if ! hash brew 2>/dev/null; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
   fi
@@ -405,7 +415,12 @@ bootstrap() {
   brew cask install "${required_casks[@]}" ;
   pip install "${required_wheels[@]}" ;
   npm install -g "${required_modules[@]}" ;
-  apm install "${required_packages[@]}" ;
+  installedAtomPackages=$(apm list --bare --installed) ;
+  for requiredPackage in "${required_packages[@]}"; do
+    if ! elementIn "${requiredPackage}" "${installedAtomPackages[@]}"; then
+      apm install "${requiredPackage}" ;
+    fi
+  done
   prefContents='{ "external_update_url": "https://clients2.google.com/service/update2/crx" }'
   for extensionID in "${required_extensions[@]}"; do
     prefFilePath="${HOME}/Library/Application Support/Google/Chrome/External Extensions/${extensionID}.json"
