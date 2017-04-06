@@ -355,8 +355,10 @@ required_modules=(
   "eslint-plugin-flowtype"
   "eslint-plugin-import"
   "eslint-plugin-jsx-a11y"
+  "eslint-plugin-markdown"
   "eslint-plugin-react"
   "node-gyp"
+  "standard"
 )
 
 # atom extensions
@@ -370,6 +372,7 @@ required_packages=(
   "intentions"
   "linter"
   "linter-eslint"
+  "linter-js-standard"
   "linter-jsonlint"
   "linter-shellcheck"
   "linter-stylelint"
@@ -378,6 +381,7 @@ required_packages=(
   "script"
   "sort-lines"
   "split-diff"
+  "standard-formatter"
 )
 
 # google chrome extensions
