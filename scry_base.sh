@@ -400,7 +400,7 @@ required_extensions=(
 # from http://stackoverflow.com/questions/3685970/check-if-an-array-contains-a-value
 elementIn () {
  local e
- for e in "${@:2}"; do [[ "${e}" == "${1%\@*}" ]] && return 0; done
+ for e in "${@:2}"; do [[ "${e%%@*}" == "${1}" ]] && return 0; done
  return 1
 }
 
@@ -415,7 +415,7 @@ bootstrap() {
   brew cask install "${required_casks[@]}" ;
   pip install "${required_wheels[@]}" ;
   npm install -g "${required_modules[@]}" ;
-  installedAtomPackages=$(apm list --bare --installed) ;
+  installedAtomPackages=($(apm list --bare --installed)) ;
   for requiredPackage in "${required_packages[@]}"; do
     if ! elementIn "${requiredPackage}" "${installedAtomPackages[@]}"; then
       apm install "${requiredPackage}" ;
