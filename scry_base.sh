@@ -356,7 +356,10 @@ required_modules=(
   "eslint-plugin-import"
   "eslint-plugin-jsx-a11y"
   "eslint-plugin-markdown"
+  "eslint-plugin-node"
+  "eslint-plugin-promise"
   "eslint-plugin-react"
+  "eslint-plugin-standard"
   "node-gyp"
   "standard"
 )
