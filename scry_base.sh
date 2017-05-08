@@ -300,6 +300,12 @@ httpDebug () { /usr/bin/curl "$@" -o /dev/null -w "dns: %{time_namelookup} conne
 #   10.   BOOTSTRAPPING AND UPDATING DEVELOPMENT ENVIRONMENT
 #   ---------------------------------------
 
+bootstrapBrew() {
+  if ! hash brew 2>/dev/null; then
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
+  fi
+}
+
 # command line applications
 required_bottles=(
   "awscli"
@@ -317,6 +323,10 @@ required_bottles=(
   "xz"
   "yarn"
 )
+
+bootstrapBrewBottles() {
+  brew install "${required_bottles[@]}" ;
+}
 
 # graphical applications
 required_casks=(
@@ -337,6 +347,10 @@ required_casks=(
   "xquartz"
 )
 
+bootstrapBrewCasks() {
+  brew cask install "${required_casks[@]}" ;
+}
+
 # python libraries
 required_wheels=(
   "appdirs"
@@ -346,23 +360,39 @@ required_wheels=(
   "sqlparse"
 )
 
+bootstrapPythonWheels() {
+  pip install "${required_wheels[@]}" ;
+}
+
 # node libraries
 required_modules=(
-  "babel-eslint"
-  "create-react-app"
-  "eslint"
-  "eslint-config-react-app"
-  "eslint-plugin-flowtype"
-  "eslint-plugin-import"
-  "eslint-plugin-jsx-a11y"
-  "eslint-plugin-markdown"
-  "eslint-plugin-node"
-  "eslint-plugin-promise"
-  "eslint-plugin-react"
-  "eslint-plugin-standard"
-  "node-gyp"
-  "standard"
+  "babel-cli@^6.24.1"
+  "babel-eslint@^7.2.3"
+  "babel-preset-flow@^6.23.0"
+  "create-react-app@^1.3.0"
+  "eslint@^3.19.0"
+  "eslint-config-react-app@^0.6.2"
+  "eslint-plugin-flowtype@^2.32.1"
+  "eslint-plugin-import@^2.2.0"
+  "eslint-plugin-jsx-a11y@^4.0.0"
+  "eslint-plugin-markdown@^1.0.0-beta.6"
+  "eslint-plugin-node@^4.2.2"
+  "eslint-plugin-promise@^3.5.0"
+  "eslint-plugin-react@^6.10.3"
+  "flow-bin@>=0.45.0"
+  "node-gyp@^3.6.1"
 )
+
+bootstrapNodeModules() {
+  npm install -g "${required_modules[@]}" ;
+}
+
+# from http://stackoverflow.com/questions/3685970/check-if-an-array-contains-a-value
+elementIn () {
+ local e
+ for e in "${@:2}"; do [[ "${e%%@*}" == "${1}" ]] && return 0; done
+ return 1
+}
 
 # atom extensions
 required_packages=(
@@ -375,7 +405,6 @@ required_packages=(
   "intentions"
   "linter"
   "linter-eslint"
-  "linter-js-standard"
   "linter-jsonlint"
   "linter-shellcheck"
   "linter-stylelint"
@@ -384,8 +413,18 @@ required_packages=(
   "script"
   "sort-lines"
   "split-diff"
-  "standard-formatter"
 )
+
+bootstrapAtomPackages() {
+  local installedAtomPackages
+  local requiredPackage
+  installedAtomPackages=($(apm list --bare --installed)) ;
+  for requiredPackage in "${required_packages[@]}"; do
+    if ! elementIn "${requiredPackage}" "${installedAtomPackages[@]}"; then
+      apm install "${requiredPackage}" ;
+    fi
+  done
+}
 
 # google chrome extensions
 required_extensions=(
@@ -400,30 +439,10 @@ required_extensions=(
   "lmhkpmbekcpmknklioeibfkpmmfibljd" # Redux DevTools
 )
 
-# from http://stackoverflow.com/questions/3685970/check-if-an-array-contains-a-value
-elementIn () {
- local e
- for e in "${@:2}"; do [[ "${e%%@*}" == "${1}" ]] && return 0; done
- return 1
-}
-
-bootstrap() {
+bootstrapGoogleExtensions() {
+  local prefContents
+  local prefFilePath
   local extensionID
-  local installedAtomPackages
-  local requiredPackage
-  if ! hash brew 2>/dev/null; then
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
-  fi
-  brew install "${required_bottles[@]}" ;
-  brew cask install "${required_casks[@]}" ;
-  pip install "${required_wheels[@]}" ;
-  npm install -g "${required_modules[@]}" ;
-  installedAtomPackages=($(apm list --bare --installed)) ;
-  for requiredPackage in "${required_packages[@]}"; do
-    if ! elementIn "${requiredPackage}" "${installedAtomPackages[@]}"; then
-      apm install "${requiredPackage}" ;
-    fi
-  done
   prefContents='{ "external_update_url": "https://clients2.google.com/service/update2/crx" }'
   for extensionID in "${required_extensions[@]}"; do
     prefFilePath="${HOME}/Library/Application Support/Google/Chrome/External Extensions/${extensionID}.json"
@@ -431,6 +450,17 @@ bootstrap() {
       echo "${prefContents}" > "${prefFilePath}"
     fi
   done
+
+}
+
+bootstrap() {
+  bootstrapBrew;
+  bootstrapBrewBottles;
+  bootstrapBrewCasks;
+  bootstrapPythonWheels;
+  bootstrapNodeModules;
+  bootstrapAtomPackages;
+  bootstrapGoogleExtensions;
 }
 
 list_installed() {
@@ -463,7 +493,14 @@ upgrade() {
   brew upgrade;
   brew doctor;
   pip list --format legacy --outdated | cut -d ' ' -f1 | xargs -n1 pip install --upgrade;
-  npm outdated -g | tail -n +2 | cut -d ' ' -f1 | xargs -n1 npm install -g;
+# the following strategy doesn't work for upgrading global npm libraries, because
+# many of the global npm modules that we depend on have peer dependencies that
+# are not yet depending on the latest versions of their peers. Upgrading the peer
+# dependencies to latest breaks the main module (which was the reason we had the
+# peer dependency in the first place)
+#  npm outdated -g | tail -n +2 | cut -d ' ' -f1 | xargs -n1 npm install -g;
+# by installing with version identifiers as above, then we can upgrade as expected
+  npm upgrade -g
   apm upgrade --no-confirm;
 }
 
