@@ -372,6 +372,7 @@ required_modules=(
   "create-react-app@^1.3.0"
   "eslint@^3.19.0"
   "eslint-config-react-app@^0.6.2"
+  "eslint-plugin-babel@^4.1.1"
   "eslint-plugin-flowtype@^2.32.1"
   "eslint-plugin-import@^2.2.0"
   "eslint-plugin-jsx-a11y@^4.0.0"
