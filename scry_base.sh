@@ -309,7 +309,6 @@ bootstrapBrew() {
 # command line applications
 required_bottles=(
   "awscli"
-  "flow"
   "node"
   "openssl"
   "p7zip"
