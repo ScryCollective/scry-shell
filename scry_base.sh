@@ -49,7 +49,7 @@
 #   -------------------------------
 
 # From https://coderwall.com/p/fasnya/add-git-branch-name-to-bash-prompt
-parse_git_branch() {
+parse_git_branch () {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ > \1 </'
 }
 
@@ -71,7 +71,7 @@ alias mv='mv -iv'                # Preferred 'mv' implementation
 alias mkdir='mkdir -pv'          # Preferred 'mkdir' implementation
 alias ll='ls -FGlAhp'            # Preferred 'ls' implementation
 alias less='less -FSRXc'         # Preferred 'less' implementation
-cd() { builtin cd "$@"; ll; }    # Always list directory contents upon 'cd'
+cd () { builtin cd "$@"; ll; }    # Always list directory contents upon 'cd'
 alias cd..='cd ../'              # Go back 1 directory level (for fast typers)
 alias ..='cd ../'                # Go back 1 directory level
 alias ...='cd ../../'            # Go back 2 directory levels
@@ -156,7 +156,7 @@ extract () {
       *.zip)       unzip "$1"       ;;
       *.Z)         uncompress "$1"  ;;
       *.7z)        7z x "$1"        ;;
-      *)     echo "'$1' cannot be extracted via extract()" ;;
+      *)     echo "'$1' cannot be extracted via extract" ;;
     esac
   else
     echo "'$1' is not a valid file"
@@ -219,7 +219,7 @@ alias openPorts='sudo lsof -i | grep LISTEN'        # openPorts:    All listenin
 alias showBlocked='sudo ipfw list'                  # showBlocked:  All ipfw rules inc/ blocked IPs
 
 #   ii:  display useful host related informaton
-ii() {
+ii () {
   echo -e "\nYou are logged on ${RED}$HOST"
   echo -e "\nAdditionnal information:$NC " ; uname -a
   echo -e "\n${RED}Users logged on:$NC " ; w -h
@@ -300,14 +300,27 @@ httpDebug () { /usr/bin/curl "$@" -o /dev/null -w "dns: %{time_namelookup} conne
 #   10.   BOOTSTRAPPING AND UPDATING DEVELOPMENT ENVIRONMENT
 #   ---------------------------------------
 
-bootstrapBrew() {
+# from http://stackoverflow.com/questions/3685970/check-if-an-array-contains-a-value
+elementIn () {
+ local e
+ for e in "${@:2}"; do [[ "${e}" == "${1}" ]] && return 0; done
+ return 1
+}
+
+
+bootstrapBrew () {
   if ! hash brew 2>/dev/null; then
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
+   echo "starting Homebrew install . . . "
+   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
   fi
 }
 
 # command line applications
-required_bottles=(
+listInstalledBottles () {
+  brew list -1
+}
+
+requiredBottles=(
   "awscli"
   "node"
   "openssl"
@@ -323,12 +336,25 @@ required_bottles=(
   "yarn"
 )
 
-bootstrapBrewBottles() {
-  brew install "${required_bottles[@]}" ;
+bootstrapBrewBottles () {
+  local installedBrewBottles
+  local requiredBottle
+  echo "starting brew bottle bootstrap . . . "
+  installedBrewBottles=($(listInstalledBottles)) ;
+  for requiredBottle in "${requiredBottles[@]}"; do
+    if ! elementIn "${requiredBottle}" "${installedBrewBottles[@]}"; then
+      echo "starting install of ${requiredBottle} . . . "
+      brew install "${requiredBottle}" ;
+    fi
+  done
 }
 
 # graphical applications
-required_casks=(
+listInstalledCasks () {
+  brew cask list -1
+}
+
+requiredCasks=(
   "adobe-reader"
   "atom"
   "caffeine"
@@ -346,12 +372,25 @@ required_casks=(
   "xquartz"
 )
 
-bootstrapBrewCasks() {
-  brew cask install "${required_casks[@]}" ;
+bootstrapBrewCasks () {
+  local installedBrewCasks
+  local requiredCask
+  echo "starting brew cask bootstrap . . . "
+  installedBrewCasks=($(listInstalledCasks)) ;
+  for requiredCask in "${requiredCasks[@]}"; do
+    if ! elementIn "${requiredCask}" "${installedBrewCasks[@]}"; then
+      echo "starting install of ${requiredCask} . . . "
+      brew cask install "${requiredCask}" ;
+    fi
+  done
 }
 
 # python libraries
-required_wheels=(
+listInstalledWheels () {
+  pip list --format=legacy | cut -d ' ' -f 1
+}
+
+requiredWheels=(
   "appdirs"
   "packaging"
   "pyparsing"
@@ -359,12 +398,25 @@ required_wheels=(
   "sqlparse"
 )
 
-bootstrapPythonWheels() {
-  pip install "${required_wheels[@]}" ;
+bootstrapPythonWheels () {
+  local installedWheels
+  local requiredWheel
+  echo "starting python wheel bootstrap . . . "
+  installedWheels=($(listInstalledWheels)) ;
+  for requiredWheel in "${requiredWheels[@]}"; do
+    if ! elementIn "${requiredWheel}" "${installedWheels[@]}"; then
+      echo "starting install of ${requiredWheel} . . . "
+      pip install "${requiredWheel}" ;
+    fi
+  done
 }
 
 # node libraries
-required_modules=(
+listNodeModules () {
+  npm list -g --depth=0 | tail +2 | cut -c5- | cut -d @ -f 1
+}
+
+requiredModules=(
   "babel-cli@^6.24.1"
   "babel-eslint@^7.2.3"
   "babel-preset-flow@^6.23.0"
@@ -372,39 +424,47 @@ required_modules=(
   "eslint@^3.19.0"
   "eslint-config-react-app@^0.6.2"
   "eslint-plugin-babel@^4.1.1"
-  "eslint-plugin-flowtype@^2.32.1"
+  "eslint-plugin-flowtype@^2.33.0"
   "eslint-plugin-import@^2.2.0"
   "eslint-plugin-jsx-a11y@^4.0.0"
   "eslint-plugin-markdown@^1.0.0-beta.6"
   "eslint-plugin-node@^4.2.2"
   "eslint-plugin-promise@^3.5.0"
   "eslint-plugin-react@^6.10.3"
-  "flow-bin@>=0.45.0"
+  "flow-bin@>=0.46.0"
   "node-gyp@^3.6.1"
 )
 
-bootstrapNodeModules() {
-  npm install -g "${required_modules[@]}" ;
-}
-
-# from http://stackoverflow.com/questions/3685970/check-if-an-array-contains-a-value
-elementIn () {
- local e
- for e in "${@:2}"; do [[ "${e%%@*}" == "${1}" ]] && return 0; done
- return 1
+bootstrapNodeModules () {
+  local installedModules
+  local requiredModule
+  echo "starting node module bootstrap . . . "
+  installedModules=($(listNodeModules)) ;
+  for requiredModule in "${requiredModules[@]}"; do
+    # use parameter expansion strip the @ sign and everything after the @
+    # when checking if this module is installed
+    if ! elementIn "${requiredModule%%@*}" "${installedModules[@]}"; then
+      echo "starting install of ${requiredModule} . . . "
+      npm install -g "${requiredModule}" ;
+    fi
+  done
 }
 
 # atom extensions
-required_packages=(
+listAtomPackages () {
+  apm list --bare --installed | cut -d @ -f 1
+}
+
+requiredPackages=(
   "atom-beautify"
   "busy-signal"
-  "flow-ide"
   "git-control"
   "git-plus"
   "git-time-machine"
   "intentions"
   "linter"
   "linter-eslint"
+  "linter-flow"
   "linter-jsonlint"
   "linter-shellcheck"
   "linter-stylelint"
@@ -415,19 +475,21 @@ required_packages=(
   "split-diff"
 )
 
-bootstrapAtomPackages() {
+bootstrapAtomPackages () {
   local installedAtomPackages
   local requiredPackage
-  installedAtomPackages=($(apm list --bare --installed)) ;
-  for requiredPackage in "${required_packages[@]}"; do
+  echo "starting atom package bootstrap . . . "
+  installedAtomPackages=($(listAtomPackages)) ;
+  for requiredPackage in "${requiredPackages[@]}"; do
     if ! elementIn "${requiredPackage}" "${installedAtomPackages[@]}"; then
+      echo "starting install of ${requiredPackage} . . . "
       apm install "${requiredPackage}" ;
     fi
   done
 }
 
 # google chrome extensions
-required_extensions=(
+requiredExtensions=(
   "lmjegmlicamnimmfhcmpkclmigmmcbeh" # Application Launcher for Drive
   "aohghmighlieiainnegkcijnfilokake" # Google Docs
   "ghbmnnjooekpmoecnnnilnnbdlolhkhi" # Google Docs Offline
@@ -439,12 +501,13 @@ required_extensions=(
   "lmhkpmbekcpmknklioeibfkpmmfibljd" # Redux DevTools
 )
 
-bootstrapGoogleExtensions() {
+bootstrapGoogleExtensions () {
   local prefContents
   local prefFilePath
   local extensionID
+  echo "starting google extension bootstrap . . . "
   prefContents='{ "external_update_url": "https://clients2.google.com/service/update2/crx" }'
-  for extensionID in "${required_extensions[@]}"; do
+  for extensionID in "${requiredExtensions[@]}"; do
     prefFilePath="${HOME}/Library/Application Support/Google/Chrome/External Extensions/${extensionID}.json"
     if ! [[ -f "${prefFilePath}" ]]; then
       echo "${prefContents}" > "${prefFilePath}"
@@ -453,7 +516,8 @@ bootstrapGoogleExtensions() {
 
 }
 
-bootstrap() {
+bootstrap () {
+  echo "starting bootstrap . . . "
   bootstrapBrew;
   bootstrapBrewBottles;
   bootstrapBrewCasks;
@@ -463,35 +527,41 @@ bootstrap() {
   bootstrapGoogleExtensions;
 }
 
-list_installed() {
-  echo "brew list -1";
-  echo "-----------";
-  brew list -1;
-  echo "";
-  echo "brew cask list -1";
-  echo "-----------------";
-  brew cask list -1;
-  echo "";
-  echo "pip list --format=legacy";
-  echo "------------------------";
-  pip list --format=legacy;
-  echo "";
-  echo "npm list -g --depth=0";
-  echo "---------------------";
-  npm list -g --depth=0;
-  echo "";
-  echo "apm list -i";
-  echo "-----------";
-  apm list -i;
+listInstalled () {
+  echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━┓";
+  echo "┃      brew bottles       ┃";
+  echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━┛";
+  listInstalledBottles;
+  echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━┓";
+  echo "┃       brew casks        ┃";
+  echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━┛";
+  listInstalledCasks;
+  echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━┓";
+  echo "┃      python wheels      ┃";
+  echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━┛";
+  listInstalledWheels;
+  echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━┓";
+  echo "┃   global node modules   ┃";
+  echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━┛";
+  listNodeModules;
+  echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━┓";
+  echo "┃      atom packages      ┃";
+  echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━┛";
+  listAtomPackages;
 }
 
 #   upgrade: Upgrade brew itself, and all installed bottles and casks,
 #            then upgrade all python wheels installed with pip, all
 #            globally installed node modules, and finally all atom packages.
-upgrade() {
+upgrade () {
+  bootstrap;
+  echo "starting brew update . . . "
   brew update;
+  echo "starting brew upgrade . . . "
   brew upgrade;
+  echo "starting brew doctor . . . "
   brew doctor;
+  echo "starting python wheel upgrade . . . "
   pip list --format legacy --outdated | cut -d ' ' -f1 | xargs -n1 pip install --upgrade;
 # the following strategy doesn't work for upgrading global npm libraries, because
 # many of the global npm modules that we depend on have peer dependencies that
@@ -500,11 +570,13 @@ upgrade() {
 # peer dependency in the first place)
 #  npm outdated -g | tail -n +2 | cut -d ' ' -f1 | xargs -n1 npm install -g;
 # by installing with version identifiers as above, then we can upgrade as expected
+  echo "starting global node module upgrade . . . "
   npm upgrade -g
+  echo "starting atom package upgrade . . . "
   apm upgrade --no-confirm;
 }
 
-deepgit() {
+deepgit () {
   for item in *
   do
     # only directories are examined
