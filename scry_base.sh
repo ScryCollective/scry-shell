@@ -554,15 +554,14 @@ listInstalled () {
 #            then upgrade all python wheels installed with pip, all
 #            globally installed node modules, and finally all atom packages.
 upgrade () {
-  bootstrap;
   echo "starting brew update . . . "
-  brew update;
+  brew update
   echo "starting brew upgrade . . . "
-  brew upgrade;
+  brew upgrade
   echo "starting brew doctor . . . "
-  brew doctor;
+  brew doctor
   echo "starting python wheel upgrade . . . "
-  pip list --format legacy --outdated | cut -d ' ' -f1 | xargs -n1 pip install --upgrade;
+  pip list --format legacy --outdated | cut -d ' ' -f1 | xargs -n1 pip install --upgrade
 # the following strategy doesn't work for upgrading global npm libraries, because
 # many of the global npm modules that we depend on have peer dependencies that
 # are not yet depending on the latest versions of their peers. Upgrading the peer
@@ -573,7 +572,7 @@ upgrade () {
   echo "starting global node module upgrade . . . "
   npm upgrade -g
   echo "starting atom package upgrade . . . "
-  apm upgrade --no-confirm;
+  apm upgrade --no-confirm
 }
 
 deepgit () {
