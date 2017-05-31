@@ -171,8 +171,8 @@ updateBootstrapReqs () {
   then
     git clone https://github.com/jstafford/scry-shell-base.git "${HOME}/.scry-shell"
   fi
-  git pull -C "${HOME}/.scry-shell"
-  source "${HOME}/.scry-shell/boostrap_reqs.sh"
+  git -C "${HOME}/.scry-shell" pull
+  source "${HOME}/.scry-shell/bootstrap_reqs.sh"
 }
 
 bootstrap () {
