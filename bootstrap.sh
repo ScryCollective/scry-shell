@@ -169,7 +169,7 @@ updateBootstrapReqs () {
   echo "updating bootstrap requriements . . . "
   if ! [ -d "${HOME}/.scry-shell" ]
   then
-    git clone https://github.com/jstafford/scry-shell-base.git "${HOME}/.scry-shell"
+    git clone https://github.com/ScryCollective/scry-shell.git "${HOME}/.scry-shell"
   fi
   git -C "${HOME}/.scry-shell" pull
   source "${HOME}/.scry-shell/bootstrap_reqs.sh"
