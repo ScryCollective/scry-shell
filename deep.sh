@@ -39,16 +39,16 @@ deepgit () {
   for item in *
   do
     # only directories are examined
-    if [[ -d "${item}" ]];
+    if [[ -d "${item}" ]]
     then
       # if they have a .git sub directory, then they are assumed to be a git repo
-      if [[ -d "${item}/.git" ]];
+      if [[ -d "${item}/.git" ]]
       then
         echo "————————————————————————————————————————"
         echo "$(pwd)/${item}"
         git -C "${item}" "$@"
       # otherwise recurse into the directory, unless the name begins with micro
-      elif [[ "${item:0:1}" != "µ" ]];
+      elif [[ "${item:0:1}" != "µ" ]]
       then
         pushd "${item}" > /dev/null
         deepgit "$@"
@@ -67,10 +67,10 @@ deepyarn () {
   for item in *
   do
     # only directories are examined
-    if [[ -d "${item}" ]];
+    if [[ -d "${item}" ]]
     then
       # if they have a package.json file directory, then they are assumed to be a node project
-      if [[ -f "${item}/package.json" ]];
+      if [[ -f "${item}/package.json" ]]
       then
         echo "————————————————————————————————————————"
         echo "$(pwd)/${item}"
@@ -78,7 +78,7 @@ deepyarn () {
         yarn "$@"
         popd > /dev/null
     # otherwise recurse into the directory, unless the name is node_modules
-      elif [[ "${item}" != "node_modules" ]];
+      elif [[ "${item}" != "node_modules" ]]
       then
         pushd "${item}" > /dev/null
         deepyarn "$@"

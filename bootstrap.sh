@@ -30,15 +30,15 @@
 # from http://stackoverflow.com/questions/3685970/check-if-an-array-contains-a-value
 elementIn () {
  local e
- for e in "${@:2}";
+ for e in "${@:2}"
  do
-   [[ "${e}" == "${1}" ]] && return 0;
+   [[ "${e}" == "${1}" ]] && return 0
  done
  return 1
 }
 
 bootstrapBrew () {
-  if ! hash brew 2>/dev/null;
+  if ! hash brew 2>/dev/null
   then
    echo "starting Homebrew install . . . "
    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -55,9 +55,9 @@ bootstrapBrewBottles () {
   local requiredBottle
   echo "starting brew bottle bootstrap . . . "
   installedBrewBottles=($(listInstalledBottles))
-  for requiredBottle in "${requiredBottles[@]}";
+  for requiredBottle in "${requiredBottles[@]}"
   do
-    if ! elementIn "${requiredBottle}" "${installedBrewBottles[@]}";
+    if ! elementIn "${requiredBottle}" "${installedBrewBottles[@]}"
     then
       echo "starting install of ${requiredBottle} . . . "
       brew install "${requiredBottle}"
@@ -75,9 +75,9 @@ bootstrapBrewCasks () {
   local requiredCask
   echo "starting brew cask bootstrap . . . "
   installedBrewCasks=($(listInstalledCasks))
-  for requiredCask in "${requiredCasks[@]}";
+  for requiredCask in "${requiredCasks[@]}"
   do
-    if ! elementIn "${requiredCask}" "${installedBrewCasks[@]}";
+    if ! elementIn "${requiredCask}" "${installedBrewCasks[@]}"
     then
       echo "starting install of ${requiredCask} . . . "
       brew cask install "${requiredCask}"
@@ -95,9 +95,9 @@ bootstrapPythonWheels () {
   local requiredWheel
   echo "starting python wheel bootstrap . . . "
   installedWheels=($(listInstalledWheels))
-  for requiredWheel in "${requiredWheels[@]}";
+  for requiredWheel in "${requiredWheels[@]}"
   do
-    if ! elementIn "${requiredWheel}" "${installedWheels[@]}";
+    if ! elementIn "${requiredWheel}" "${installedWheels[@]}"
     then
       echo "starting install of ${requiredWheel} . . . "
       pip install "${requiredWheel}"
@@ -115,11 +115,11 @@ bootstrapNodeModules () {
   local requiredModule
   echo "starting node module bootstrap . . . "
   installedModules=($(listNodeModules))
-  for requiredModule in "${requiredModules[@]}";
+  for requiredModule in "${requiredModules[@]}"
   do
     # use parameter expansion strip the @ sign and everything after the @
     # when checking if this module is installed
-    if ! elementIn "${requiredModule%%@*}" "${installedModules[@]}";
+    if ! elementIn "${requiredModule%%@*}" "${installedModules[@]}"
     then
       echo "starting install of ${requiredModule} . . . "
       npm install -g "${requiredModule}"
@@ -137,9 +137,9 @@ bootstrapAtomPackages () {
   local requiredPackage
   echo "starting atom package bootstrap . . . "
   installedAtomPackages=($(listAtomPackages))
-  for requiredPackage in "${requiredPackages[@]}";
+  for requiredPackage in "${requiredPackages[@]}"
   do
-    if ! elementIn "${requiredPackage}" "${installedAtomPackages[@]}";
+    if ! elementIn "${requiredPackage}" "${installedAtomPackages[@]}"
     then
       echo "starting install of ${requiredPackage} . . . "
       apm install "${requiredPackage}"
@@ -154,10 +154,10 @@ bootstrapGoogleExtensions () {
   local extensionID
   echo "starting google extension bootstrap . . . "
   prefContents='{ "external_update_url": "https://clients2.google.com/service/update2/crx" }'
-  for extensionID in "${requiredExtensions[@]}";
+  for extensionID in "${requiredExtensions[@]}"
   do
     prefFilePath="${HOME}/Library/Application Support/Google/Chrome/External Extensions/${extensionID}.json"
-    if ! [[ -f "${prefFilePath}" ]];
+    if ! [[ -f "${prefFilePath}" ]]
     then
       echo "${prefContents}" > "${prefFilePath}"
     fi
@@ -166,7 +166,7 @@ bootstrapGoogleExtensions () {
 }
 
 updateBootstrapReqs () {
-  echo "starting google extension bootstrap . . . "
+  echo "updating bootstrap requriements . . . "
   if ! [ -d "${HOME}/.scry-shell" ]
   then
     git clone https://github.com/jstafford/scry-shell-base.git "${HOME}/.scry-shell"

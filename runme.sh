@@ -26,26 +26,25 @@
 # easy setup to get your environment bootstrapped, and scry-shell added to
 # your bash_profile
 
-source "./bootstrap"
+source "./bootstrap.sh"
 
 if [ -f "${HOME}/.bash_profile" ]
 then
-  file=$(<"${HOME}/.bash_profile")
-  IFS=$'\n' read -rd '' -a $fileLines <<<"$file"
-  shebang=${fileLines[0]}
-  unset "fileLines[0]"
-  file=$(printf '%s\n' "${fileLines[@]}")
+  shebang=$(head -n 1 "${HOME}/.bash_profile")
+  remiander=$(tail -n +2 "${HOME}/.bash_profile")
 else
   shebang="#!/bin/bash"
 fi
 
-scrySource="\nsource \"${HOME}/.scry-shell/scry-shell.sh\"\n"
+scrySource="source \"${HOME}/.scry-shell/scry-shell.sh\""
 
-boostrap
+bootstrap
 
-echo "${shebang}" > "${HOME}/.bash_profile"
-echo "${scrySource}" >> "${HOME}/.bash_profile"
-if [ -n "${file}" ]
+echo "${shebang}"     > "${HOME}/.bash_profile"
+echo ""               >> "${HOME}/.bash_profile"
+echo "${scrySource}"  >> "${HOME}/.bash_profile"
+echo ""               >> "${HOME}/.bash_profile"
+if [ -n "${remiander}" ]
 then
-  echo "${file}" >> "${HOME}/.bash_profile"
+  echo "${remiander}" >> "${HOME}/.bash_profile"
 fi
