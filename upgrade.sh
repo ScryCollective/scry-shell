@@ -35,6 +35,8 @@ upgrade () {
   brew update
   echo "starting brew upgrade . . . "
   brew upgrade
+  echo "starting brew cask upgrade . . . "
+  brew cask outdated --quiet | xargs brew cask reinstall
   echo "starting brew doctor . . . "
   brew doctor
   echo "starting python wheel upgrade . . . "
