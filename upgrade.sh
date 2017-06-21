@@ -35,9 +35,9 @@
 #      it is easier to revert back to the previous version.
 upgrade () {
   echo "cleaning up from previous upgrades . . ."
-  echo "starting brew cleanup"
+  echo "starting brew cleanup . . ."
   brew cleanup
-  echo "starting brew cask cleanup"
+  echo "starting brew cask cleanup . . ."
   brew cask cleanup
   echo "starting brew update . . . "
   brew update
