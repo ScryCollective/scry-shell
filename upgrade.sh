@@ -30,7 +30,15 @@
 #   upgrade: Upgrade brew itself, and all installed bottles and casks,
 #            then upgrade all python wheels installed with pip, all
 #            globally installed node modules, and finally all atom packages.
+#   We wait to run cleanup until the next time upgrade is run, so that in
+#      the unfortunate event there is a problem with one of the installs,
+#      it is easier to revert back to the previous version.
 upgrade () {
+  echo "cleaning up from previous upgrades . . ."
+  echo "starting brew cleanup"
+  brew cleanup
+  echo "starting brew cask cleanup"
+  brew cask cleanup
   echo "starting brew update . . . "
   brew update
   echo "starting brew upgrade . . . "
