@@ -50,6 +50,7 @@ export requiredCasks=(
   "google-drive"
   "inkscape"
   "java"
+  "macdown"
   "openoffice"
   "paintbrush"
   "quickbooks"
