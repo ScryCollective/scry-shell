@@ -27,16 +27,6 @@
 #   BOOTSTRAP DEVELOPMENT ENVIRONMENT
 #   ---------------------------------------
 
-# from http://stackoverflow.com/questions/3685970/check-if-an-array-contains-a-value
-elementIn () {
- local e
- for e in "${@:2}"
- do
-   [[ "${e}" == "${1}" ]] && return 0
- done
- return 1
-}
-
 bootstrapBrew () {
   if ! hash brew 2>/dev/null
   then
@@ -55,9 +45,11 @@ bootstrapBrewBottles () {
   local requiredBottle
   echo "starting brew bottle bootstrap . . . "
   installedBrewBottles=($(listInstalledBottles))
+  # echo installed: "${installedBrewBottles[@]}"
   for requiredBottle in "${requiredBottles[@]}"
   do
-    if ! elementIn "${requiredBottle}" "${installedBrewBottles[@]}"
+    # echo Required: "${requiredBottle}"
+    if ! [[ "${installedBrewBottles[*]}" =~ ${requiredBottle} ]]
     then
       echo "starting install of ${requiredBottle} . . . "
       brew install "${requiredBottle}"
@@ -75,9 +67,11 @@ bootstrapBrewCasks () {
   local requiredCask
   echo "starting brew cask bootstrap . . . "
   installedBrewCasks=($(listInstalledCasks))
+  # echo installed: "${installedBrewCasks[@]}"
   for requiredCask in "${requiredCasks[@]}"
   do
-    if ! elementIn "${requiredCask}" "${installedBrewCasks[@]}"
+    # echo Required: "${requiredCask}"
+    if ! [[ "${installedBrewCasks[*]}" =~ ${requiredCask} ]]
     then
       echo "starting install of ${requiredCask} . . . "
       brew cask install "${requiredCask}"
@@ -97,7 +91,7 @@ bootstrapPythonWheels () {
   installedWheels=($(listInstalledWheels))
   for requiredWheel in "${requiredWheels[@]}"
   do
-    if ! elementIn "${requiredWheel}" "${installedWheels[@]}"
+    if ! [[ "${installedWheels[*]}" =~ ${requiredWheel} ]]
     then
       echo "starting install of ${requiredWheel} . . . "
       pip install "${requiredWheel}"
@@ -119,7 +113,7 @@ bootstrapNodeModules () {
   do
     # use parameter expansion strip the @ sign and everything after the @
     # when checking if this module is installed
-    if ! elementIn "${requiredModule%%@*}" "${installedModules[@]}"
+    if ! [[ "${installedModules[*]}" =~ ${requiredModule%%@*} ]]
     then
       echo "starting install of ${requiredModule} . . . "
       npm install -g "${requiredModule}"
@@ -139,7 +133,7 @@ bootstrapAtomPackages () {
   installedAtomPackages=($(listAtomPackages))
   for requiredPackage in "${requiredPackages[@]}"
   do
-    if ! elementIn "${requiredPackage}" "${installedAtomPackages[@]}"
+    if ! [[ "${installedAtomPackages[*]}" =~ ${requiredPackage} ]]
     then
       echo "starting install of ${requiredPackage} . . . "
       apm install "${requiredPackage}"

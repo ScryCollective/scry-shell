@@ -24,7 +24,11 @@
 # ------------------------------------------------------------------------------
 
 # command line applications
-export requiredBottles=(
+if [ -n "${requiredBottles}" ]
+then
+  echo "Redeclaring requiredBottles"
+fi
+declare requiredBottles=(
   "awscli"
   "node"
   "openssl"
@@ -41,7 +45,11 @@ export requiredBottles=(
 )
 
 # gui applications
-export requiredCasks=(
+if [ -n "${requiredCasks}" ]
+then
+  echo "Redeclaring requiredCasks"
+fi
+declare requiredCasks=(
   "adobe-reader"
   "atom"
   "caffeine"
@@ -61,7 +69,11 @@ export requiredCasks=(
 )
 
 # python libraries
-export requiredWheels=(
+if [ -n "${requiredWheels}" ]
+then
+  echo "Redeclaring requiredWheels"
+fi
+declare requiredWheels=(
   "appdirs"
   "packaging"
   "pyparsing"
@@ -70,7 +82,11 @@ export requiredWheels=(
 )
 
 # node libraries
-export requiredModules=(
+if [ -n "${requiredModules}" ]
+then
+  echo "Redeclaring requiredModules"
+fi
+declare requiredModules=(
   "babel-cli@^6.24.1"
   "babel-eslint@^7.2.3"
   "babel-preset-flow@^6.23.0"
@@ -90,7 +106,11 @@ export requiredModules=(
 )
 
 # atom extensions
-export requiredPackages=(
+if [ -n "${requiredPackages}" ]
+then
+  echo "Redeclaring requiredPackages"
+fi
+declare requiredPackages=(
   "atom-beautify"
   "busy-signal"
   "git-control"
@@ -111,7 +131,11 @@ export requiredPackages=(
 )
 
 # google chrome extensions
-export requiredExtensions=(
+if [ -n "${requiredExtensions}" ]
+then
+  echo "Redeclaring requiredExtensions"
+fi
+declare requiredExtensions=(
   "lmjegmlicamnimmfhcmpkclmigmmcbeh" # Application Launcher for Drive
   "aohghmighlieiainnegkcijnfilokake" # Google Docs
   "ghbmnnjooekpmoecnnnilnnbdlolhkhi" # Google Docs Offline
