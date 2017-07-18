@@ -25,7 +25,6 @@
 
 source "${HOME}/.scry-shell/prompt.sh"
 source "${HOME}/.scry-shell/bash_profile.sh"
-source "${HOME}/.scry-shell/bootstrap_reqs.sh"
 source "${HOME}/.scry-shell/bootstrap.sh"
 source "${HOME}/.scry-shell/upgrade.sh"
 source "${HOME}/.scry-shell/deep.sh"
