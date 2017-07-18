@@ -103,7 +103,7 @@ declare requiredModules=(
   "eslint-plugin-promise@^3.5.0"
   "eslint-plugin-react@^6.10.3"
   "flow-bin@^0.49.1"
-  "flow-inspect^1.0.1"
+  "flow-inspect@^1.0.1"
   "node-gyp@^3.6.1"
 )
 
