@@ -27,7 +27,7 @@
 #   BOOTSTRAP DEVELOPMENT ENVIRONMENT
 #   ---------------------------------------
 
-currentDir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+currentDir=$(builtin cd -P -- "$(dirname -- "$0")" && pwd -P)
 
 updateBootstrapReqs () {
   echo "updating bootstrap requriements . . . "
