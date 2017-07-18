@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 # ------------------------------------------------------------------------------
 # MIT License
 #
@@ -23,12 +23,19 @@
 # SOFTWARE.
 # ------------------------------------------------------------------------------
 
+# Turn on more debugging.
+#   -u  Treat unset variables as an error when substituting.
+#   -x  Print commands and their arguments as they are executed.
+# For the full list of options use: help set
+set -ux
+
 source ./bootstrap.sh
 
-bootstrapBrew
-bootstrapBrewBottles
-bootstrapBrewCasks
-bootstrapPythonWheels
-bootstrapNodeModules
-bootstrapAtomPackages
-bootstrapGoogleExtensions
+bootstrap
+# bootstrapBrew
+# bootstrapBrewBottles
+# bootstrapBrewCasks
+# bootstrapPythonWheels
+# bootstrapNodeModules
+# bootstrapAtomPackages
+# bootstrapChromeExtensions

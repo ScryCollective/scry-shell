@@ -1,0 +1,17 @@
+adobe-reader
+atom
+caffeine
+firefox
+google-chrome
+google-drive
+inkscape
+java
+macdown
+openoffice
+paintbrush
+quickbooks
+rescuetime
+rowanj-gitx
+spectacle
+textwrangler
+xquartz

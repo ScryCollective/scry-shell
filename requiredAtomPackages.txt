@@ -1,0 +1,17 @@
+atom-beautify
+busy-signal
+git-control
+git-plus
+git-time-machine
+intentions
+linter
+linter-eslint
+linter-flow
+linter-jsonlint
+linter-shellcheck
+linter-stylelint
+linter-ui-default
+react
+script
+sort-lines
+split-diff

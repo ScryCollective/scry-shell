@@ -27,6 +27,17 @@
 #   BOOTSTRAP DEVELOPMENT ENVIRONMENT
 #   ---------------------------------------
 
+currentDir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+
+updateBootstrapReqs () {
+  echo "updating bootstrap requriements . . . "
+  if ! [ -d "${HOME}/.scry-shell" ]
+  then
+    git clone https://github.com/ScryCollective/scry-shell.git "${HOME}/.scry-shell"
+  fi
+  git -C "${HOME}/.scry-shell" pull
+}
+
 bootstrapBrew () {
   if ! hash brew 2>/dev/null
   then
@@ -45,8 +56,7 @@ bootstrapBrewBottles () {
   local requiredBottle
   echo "starting brew bottle bootstrap . . . "
   installedBrewBottles=($(listInstalledBottles))
-  # echo installed: "${installedBrewBottles[@]}"
-  for requiredBottle in "${requiredBottles[@]}"
+  while IFS='' read -r requiredBottle || [[ -n "$requiredBottle" ]]
   do
     # echo Required: "${requiredBottle}"
     if ! [[ "${installedBrewBottles[*]}" =~ ${requiredBottle} ]]
@@ -54,7 +64,7 @@ bootstrapBrewBottles () {
       echo "starting install of ${requiredBottle} . . . "
       brew install "${requiredBottle}"
     fi
-  done
+  done < "${currentDir}/requiredBrewBottles.txt"
 }
 
 # graphical applications
@@ -68,7 +78,7 @@ bootstrapBrewCasks () {
   echo "starting brew cask bootstrap . . . "
   installedBrewCasks=($(listInstalledCasks))
   # echo installed: "${installedBrewCasks[@]}"
-  for requiredCask in "${requiredCasks[@]}"
+  while IFS='' read -r requiredCask || [[ -n "$requiredCask" ]]
   do
     # echo Required: "${requiredCask}"
     if ! [[ "${installedBrewCasks[*]}" =~ ${requiredCask} ]]
@@ -76,7 +86,7 @@ bootstrapBrewCasks () {
       echo "starting install of ${requiredCask} . . . "
       brew cask install "${requiredCask}"
     fi
-  done
+  done < "${currentDir}/requiredBrewCasks.txt"
 }
 
 # python libraries
@@ -89,14 +99,14 @@ bootstrapPythonWheels () {
   local requiredWheel
   echo "starting python wheel bootstrap . . . "
   installedWheels=($(listInstalledWheels))
-  for requiredWheel in "${requiredWheels[@]}"
+  while IFS='' read -r requiredWheel || [[ -n "$requiredWheel" ]]
   do
     if ! [[ "${installedWheels[*]}" =~ ${requiredWheel} ]]
     then
       echo "starting install of ${requiredWheel} . . . "
       pip install "${requiredWheel}"
     fi
-  done
+  done < "${currentDir}/requiredPythonWheels.txt"
 }
 
 # node libraries
@@ -109,7 +119,7 @@ bootstrapNodeModules () {
   local requiredModule
   echo "starting node module bootstrap . . . "
   installedModules=($(listNodeModules))
-  for requiredModule in "${requiredModules[@]}"
+  while IFS='' read -r requiredModule || [[ -n "$requiredModule" ]]
   do
     # use parameter expansion strip the @ sign and everything after the @
     # when checking if this module is installed
@@ -118,7 +128,7 @@ bootstrapNodeModules () {
       echo "starting install of ${requiredModule} . . . "
       npm install -g "${requiredModule}"
     fi
-  done
+  done  < "${currentDir}/requiredNodeModules.txt"
 }
 
 # atom extensions
@@ -131,42 +141,47 @@ bootstrapAtomPackages () {
   local requiredPackage
   echo "starting atom package bootstrap . . . "
   installedAtomPackages=($(listAtomPackages))
-  for requiredPackage in "${requiredPackages[@]}"
+  while IFS='' read -r requiredPackage || [[ -n "$requiredPackage" ]]
   do
     if ! [[ "${installedAtomPackages[*]}" =~ ${requiredPackage} ]]
     then
       echo "starting install of ${requiredPackage} . . . "
       apm install "${requiredPackage}"
     fi
-  done
+  done < "${currentDir}/requiredAtomPackages.txt"
+}
+
+listChromeExtensions () {
+for entry in "${HOME}/Library/Application Support/Google/Chrome/External Extensions"/*
+do
+  echo "${entry##*/}"
+done
 }
 
 # google chrome extensions
-bootstrapGoogleExtensions () {
-  local prefContents
-  local prefFilePath
+bootstrapChromeExtensions () {
+  local installedChromeExtensions
+  local requiredExtension
+  local jsonContents
+  local extensionFilePath
   local extensionID
-  echo "starting google extension bootstrap . . . "
-  prefContents='{ "external_update_url": "https://clients2.google.com/service/update2/crx" }'
-  for extensionID in "${requiredExtensions[@]}"
+  echo "starting chrome extension bootstrap . . . "
+  installedChromeExtensions=($(listChromeExtensions))
+  jsonContents='{ "external_update_url": "https://clients2.google.com/service/update2/crx" }'
+  while IFS='' read -r requiredExtension || [[ -n "$requiredExtension" ]]
   do
-    prefFilePath="${HOME}/Library/Application Support/Google/Chrome/External Extensions/${extensionID}.json"
-    if ! [[ -f "${prefFilePath}" ]]
+    # use parameter expansion strip the first space and everything after
+    # to get just the extensionID
+    extensionID=${requiredExtension%% *}
+    if ! [[ "${installedChromeExtensions[*]}" =~ ${extensionID} ]]
     then
-      echo "${prefContents}" > "${prefFilePath}"
+      echo "starting install of ${requiredExtension##* # } . . . "
+      echo " ⚑⚑⚑ RESTART OF CHROME REQUIRED ⚑⚑⚑ "
+      extensionFilePath="${HOME}/Library/Application Support/Google/Chrome/External Extensions/${extensionID}.json"
+      echo "${jsonContents}" > "${extensionFilePath}"
     fi
-  done
+  done < "${currentDir}/requiredChromeExtensions.txt"
 
-}
-
-updateBootstrapReqs () {
-  echo "updating bootstrap requriements . . . "
-  if ! [ -d "${HOME}/.scry-shell" ]
-  then
-    git clone https://github.com/ScryCollective/scry-shell.git "${HOME}/.scry-shell"
-  fi
-  git -C "${HOME}/.scry-shell" pull
-  source "${HOME}/.scry-shell/bootstrap_reqs.sh"
 }
 
 bootstrap () {
@@ -178,7 +193,7 @@ bootstrap () {
   bootstrapPythonWheels
   bootstrapNodeModules
   bootstrapAtomPackages
-  bootstrapGoogleExtensions
+  bootstrapChromeExtensions
 }
 
 listInstalled () {

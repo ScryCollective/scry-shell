@@ -1,0 +1,13 @@
+awscli
+node
+openssl
+p7zip
+packer
+pkg-config
+python
+shellcheck
+unrar
+watchman
+wget
+xz
+yarn

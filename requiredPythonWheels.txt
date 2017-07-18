@@ -1,0 +1,5 @@
+appdirs
+packaging
+pyparsing
+six
+sqlparse
