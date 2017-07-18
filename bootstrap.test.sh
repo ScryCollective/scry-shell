@@ -24,7 +24,6 @@
 # ------------------------------------------------------------------------------
 
 source ./bootstrap.sh
-source ./bootstrap_reqs.sh
 
 bootstrapBrew
 bootstrapBrewBottles
