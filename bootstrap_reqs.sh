@@ -62,6 +62,7 @@ declare requiredCasks=(
   "openoffice"
   "paintbrush"
   "quickbooks"
+  "rescuetime"
   "rowanj-gitx"
   "spectacle"
   "textwrangler"
@@ -145,4 +146,5 @@ declare requiredExtensions=(
   "hgldghadipiblonfkkicmgcbbijnpeog" # Immutable.js Object Formatter
   "fmkadmapgofadopljbjfkapdkoienihi" # React Developer Tools
   "lmhkpmbekcpmknklioeibfkpmmfibljd" # Redux DevTools
+  "bdakmnplckeopfghnlpocafcepegjeap" # RescueTime
 )
