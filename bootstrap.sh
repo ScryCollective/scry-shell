@@ -27,7 +27,8 @@
 #   BOOTSTRAP DEVELOPMENT ENVIRONMENT
 #   ---------------------------------------
 
-currentDir=$(builtin cd -P -- "$(dirname -- "$0")" && pwd -P)
+# path of directory containing the required<Entity>.txt files, for easier testing
+rootDir="${HOME}/.scry-shell"
 
 updateBootstrapReqs () {
   echo "updating bootstrap requriements . . . "
@@ -64,7 +65,7 @@ bootstrapBrewBottles () {
       echo "starting install of ${requiredBottle} . . . "
       brew install "${requiredBottle}"
     fi
-  done < "${currentDir}/requiredBrewBottles.txt"
+  done < "${rootDir}/requiredBrewBottles.txt"
 }
 
 # graphical applications
@@ -86,7 +87,7 @@ bootstrapBrewCasks () {
       echo "starting install of ${requiredCask} . . . "
       brew cask install "${requiredCask}"
     fi
-  done < "${currentDir}/requiredBrewCasks.txt"
+  done < "${rootDir}/requiredBrewCasks.txt"
 }
 
 # python libraries
@@ -106,7 +107,7 @@ bootstrapPythonWheels () {
       echo "starting install of ${requiredWheel} . . . "
       pip install "${requiredWheel}"
     fi
-  done < "${currentDir}/requiredPythonWheels.txt"
+  done < "${rootDir}/requiredPythonWheels.txt"
 }
 
 # node libraries
@@ -128,7 +129,7 @@ bootstrapNodeModules () {
       echo "starting install of ${requiredModule} . . . "
       npm install -g "${requiredModule}"
     fi
-  done  < "${currentDir}/requiredNodeModules.txt"
+  done  < "${rootDir}/requiredNodeModules.txt"
 }
 
 # atom extensions
@@ -148,7 +149,7 @@ bootstrapAtomPackages () {
       echo "starting install of ${requiredPackage} . . . "
       apm install "${requiredPackage}"
     fi
-  done < "${currentDir}/requiredAtomPackages.txt"
+  done < "${rootDir}/requiredAtomPackages.txt"
 }
 
 listChromeExtensions () {
@@ -180,11 +181,15 @@ bootstrapChromeExtensions () {
       extensionFilePath="${HOME}/Library/Application Support/Google/Chrome/External Extensions/${extensionID}.json"
       echo "${jsonContents}" > "${extensionFilePath}"
     fi
-  done < "${currentDir}/requiredChromeExtensions.txt"
+  done < "${rootDir}/requiredChromeExtensions.txt"
 
 }
 
 bootstrap () {
+  if [ -d "${1}" ]
+  then
+    rootDir="${1}"
+  fi
   echo "starting bootstrap . . . "
   updateBootstrapReqs
   bootstrapBrew

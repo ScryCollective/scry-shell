@@ -29,13 +29,8 @@
 # For the full list of options use: help set
 set -ux
 
-source ./bootstrap.sh
+rootDir=$(builtin cd -P -- "$(dirname -- "$0")" && pwd -P)
 
-bootstrap
-# bootstrapBrew
-# bootstrapBrewBottles
-# bootstrapBrewCasks
-# bootstrapPythonWheels
-# bootstrapNodeModules
-# bootstrapAtomPackages
-# bootstrapChromeExtensions
+source "${rootDir}"/bootstrap.sh
+
+bootstrap "${rootDir}"
