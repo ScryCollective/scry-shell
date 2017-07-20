@@ -1,6 +1,5 @@
 awscli
 node
-npm
 openssl
 p7zip
 packer
