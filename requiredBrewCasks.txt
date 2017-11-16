@@ -2,8 +2,8 @@ adobe-reader
 atom
 caffeine
 firefox
+google-backup-and-sync
 google-chrome
-google-drive
 inkscape
 java
 macdown
