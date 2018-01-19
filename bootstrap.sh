@@ -92,7 +92,7 @@ bootstrapBrewCasks () {
 
 # python libraries
 listInstalledWheels () {
-  pip list --format=legacy | cut -d ' ' -f 1
+  pip2 list --format=legacy | cut -d ' ' -f 1
 }
 
 bootstrapPythonWheels () {
@@ -105,7 +105,7 @@ bootstrapPythonWheels () {
     if ! [[ "${installedWheels[*]}" =~ ${requiredWheel} ]]
     then
       echo "starting install of ${requiredWheel} . . . "
-      pip install "${requiredWheel}"
+      pip2 install "${requiredWheel}"
     fi
   done < "${currentDir}/requiredPythonWheels.txt"
 }

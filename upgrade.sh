@@ -28,7 +28,7 @@
 #   ---------------------------------------
 
 #   upgrade: Upgrade brew itself, and all installed bottles and casks,
-#            then upgrade all python wheels installed with pip, all
+#            then upgrade all python wheels installed with pip2, all
 #            globally installed node modules, and finally all atom packages.
 #   We wait to run cleanup until the next time upgrade is run, so that in
 #      the unfortunate event there is a problem with one of the installs,
@@ -48,7 +48,7 @@ upgrade () {
   echo "starting brew doctor . . . "
   brew doctor
   echo "starting python wheel upgrade . . . "
-  pip list --format legacy --outdated | cut -d ' ' -f1 | xargs -n1 pip install --upgrade
+  pip2 list --format legacy --outdated | cut -d ' ' -f1 | xargs -n1 pip2 install --upgrade
 # the following strategy doesn't work for upgrading global npm libraries, because
 # many of the global npm modules that we depend on have peer dependencies that
 # are not yet depending on the latest versions of their peers. Upgrading the peer
