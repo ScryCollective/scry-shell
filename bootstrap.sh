@@ -28,7 +28,7 @@
 #   ---------------------------------------
 
 # path of directory containing the required<Entity>.txt files, for easier testing
-rootDir="${HOME}/.scry-shell"
+currentDir="${HOME}/.scry-shell"
 
 updateBootstrapReqs () {
   echo "updating bootstrap requriements . . . "
@@ -65,7 +65,7 @@ bootstrapBrewBottles () {
       echo "starting install of ${requiredBottle} . . . "
       brew install "${requiredBottle}"
     fi
-  done < "${rootDir}/requiredBrewBottles.txt"
+  done < "${currentDir}/requiredBrewBottles.txt"
 }
 
 # graphical applications
@@ -87,7 +87,7 @@ bootstrapBrewCasks () {
       echo "starting install of ${requiredCask} . . . "
       brew cask install "${requiredCask}"
     fi
-  done < "${rootDir}/requiredBrewCasks.txt"
+  done < "${currentDir}/requiredBrewCasks.txt"
 }
 
 # python libraries
@@ -107,7 +107,7 @@ bootstrapPythonWheels () {
       echo "starting install of ${requiredWheel} . . . "
       pip install "${requiredWheel}"
     fi
-  done < "${rootDir}/requiredPythonWheels.txt"
+  done < "${currentDir}/requiredPythonWheels.txt"
 }
 
 # node libraries
@@ -129,7 +129,7 @@ bootstrapNodeModules () {
       echo "starting install of ${requiredModule} . . . "
       npm install -g "${requiredModule}"
     fi
-  done  < "${rootDir}/requiredNodeModules.txt"
+  done  < "${currentDir}/requiredNodeModules.txt"
 }
 
 # atom extensions
@@ -149,7 +149,7 @@ bootstrapAtomPackages () {
       echo "starting install of ${requiredPackage} . . . "
       apm install "${requiredPackage}"
     fi
-  done < "${rootDir}/requiredAtomPackages.txt"
+  done < "${currentDir}/requiredAtomPackages.txt"
 }
 
 listChromeExtensions () {
@@ -181,14 +181,14 @@ bootstrapChromeExtensions () {
       extensionFilePath="${HOME}/Library/Application Support/Google/Chrome/External Extensions/${extensionID}.json"
       echo "${jsonContents}" > "${extensionFilePath}"
     fi
-  done < "${rootDir}/requiredChromeExtensions.txt"
+  done < "${currentDir}/requiredChromeExtensions.txt"
 
 }
 
 bootstrap () {
   if [ -d "${1}" ]
   then
-    rootDir="${1}"
+    currentDir="${1}"
   fi
   echo "starting bootstrap . . . "
   updateBootstrapReqs
