@@ -47,8 +47,8 @@ upgrade () {
   brew cask outdated --quiet | xargs brew cask reinstall
   echo "starting brew doctor . . . "
   brew doctor
-  echo "starting python wheel upgrade . . . "
-  pip2 list --format legacy --outdated | cut -d ' ' -f1 | xargs -n1 pip2 install --upgrade
+  # echo "starting python wheel upgrade . . . "
+  # pip2 list --format legacy --outdated | cut -d ' ' -f1 | xargs -n1 pip2 install --upgrade
 # the following strategy doesn't work for upgrading global npm libraries, because
 # many of the global npm modules that we depend on have peer dependencies that
 # are not yet depending on the latest versions of their peers. Upgrading the peer

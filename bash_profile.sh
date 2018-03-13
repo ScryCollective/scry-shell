@@ -36,8 +36,8 @@ export FONTCONFIG_PATH="/opt/X11/lib/X11/fontconfig"
 export PATH=$PATH:/usr/local/Cellar/ruby/2.4.1_1/bin
 
 # http://apple.stackexchange.com/questions/209572/how-to-use-pip-after-the-el-capitan-max-os-x-upgrade
-export PATH=/usr/local/Cellar/python/2.7.13_1/bin:$PATH
-export MANPATH=/usr/local/Cellar/python/2.7.13_1/share/man:$MANPATH
+# export PATH=/usr/local/Cellar/python/2.7.13_1/bin:$PATH
+# export MANPATH=/usr/local/Cellar/python/2.7.13_1/share/man:$MANPATH
 
 #   -----------------------------
 #   2.  MAKE TERMINAL BETTER

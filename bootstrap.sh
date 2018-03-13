@@ -91,24 +91,24 @@ bootstrapBrewCasks () {
 }
 
 # python libraries
-listInstalledWheels () {
-  pip2 list --format=legacy | cut -d ' ' -f 1
-}
-
-bootstrapPythonWheels () {
-  local installedWheels
-  local requiredWheel
-  echo "starting python wheel bootstrap . . . "
-  installedWheels=($(listInstalledWheels))
-  while IFS='' read -r requiredWheel || [[ -n "$requiredWheel" ]]
-  do
-    if ! [[ "${installedWheels[*]}" =~ ${requiredWheel} ]]
-    then
-      echo "starting install of ${requiredWheel} . . . "
-      pip2 install "${requiredWheel}"
-    fi
-  done < "${currentDir}/requiredPythonWheels.txt"
-}
+# listInstalledWheels () {
+#   pip2 list --format=legacy | cut -d ' ' -f 1
+# }
+#
+# bootstrapPythonWheels () {
+#   local installedWheels
+#   local requiredWheel
+#   echo "starting python wheel bootstrap . . . "
+#   installedWheels=($(listInstalledWheels))
+#   while IFS='' read -r requiredWheel || [[ -n "$requiredWheel" ]]
+#   do
+#     if ! [[ "${installedWheels[*]}" =~ ${requiredWheel} ]]
+#     then
+#       echo "starting install of ${requiredWheel} . . . "
+#       pip2 install "${requiredWheel}"
+#     fi
+#   done < "${currentDir}/requiredPythonWheels.txt"
+# }
 
 # node libraries
 listNodeModules () {
@@ -195,7 +195,7 @@ bootstrap () {
   bootstrapBrew
   bootstrapBrewBottles
   bootstrapBrewCasks
-  bootstrapPythonWheels
+  # bootstrapPythonWheels
   bootstrapNodeModules
   bootstrapAtomPackages
   bootstrapChromeExtensions
@@ -210,10 +210,10 @@ listInstalled () {
   echo "┃       brew casks        ┃"
   echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━┛"
   listInstalledCasks
-  echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━┓"
-  echo "┃      python wheels      ┃"
-  echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━┛"
-  listInstalledWheels
+  # echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━┓"
+  # echo "┃      python wheels      ┃"
+  # echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━┛"
+  # listInstalledWheels
   echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━┓"
   echo "┃   global node modules   ┃"
   echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━┛"

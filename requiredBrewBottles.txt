@@ -1,13 +1,13 @@
 awscli
+fontconfig
 node
 openssl
 p7zip
 packer
 pkg-config
-python
+postgresql
 shellcheck
 unrar
 watchman
 wget
-xz
 yarn
